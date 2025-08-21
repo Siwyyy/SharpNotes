@@ -46,6 +46,12 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
+    [RelayCommand]
+    private void SelectNote(Note? note)
+    {
+        SelectedNote = note;
+    }
+
     partial void OnSelectedNoteChanged(Note? value)
     {
         if (value != null)

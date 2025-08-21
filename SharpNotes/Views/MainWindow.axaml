@@ -33,12 +33,12 @@
 
                 <!-- Lista notatek -->
                 <ScrollViewer Grid.Row="1">
-                    <ItemsControl Items="{Binding Notes}">
+                    <ItemsControl ItemsSource="{Binding Notes}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Button Padding="0"
                                         Background="Transparent"
-                                        Command="{Binding $parent[Window].DataContext.OnSelectedNoteChanged}"
+                                        Command="{Binding $parent[Window].DataContext.SelectNoteCommand}"
                                         CommandParameter="{Binding}">
                                     <controls:NoteListItem />
                                 </Button>
