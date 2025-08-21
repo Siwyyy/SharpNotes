@@ -2,9 +2,50 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Design.PreviewWith>
         <Border Padding="20">
-            <!-- Add Controls for Previewer Here -->
+            <StackPanel Spacing="10">
+                <Button Content="Przycisk" Classes="primary" />
+                <Button Content="Przycisk" Classes="secondary" />
+                <TextBox Watermark="Pole tekstowe" />
+            </StackPanel>
         </Border>
     </Design.PreviewWith>
 
-    <!-- Add Styles Here -->
+    <!-- Style dla przycisków -->
+    <Style Selector="Button.primary">
+        <Setter Property="Background" Value="#ED8451" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Padding" Value="10,5" />
+        <Setter Property="CornerRadius" Value="4" />
+    </Style>
+    
+    <Style Selector="Button.primary:pointerover">
+        <Setter Property="Background" Value="#F29A6B" />
+    </Style>
+    
+    <Style Selector="Button.secondary">
+        <Setter Property="Background" Value="#FEDABE" />
+        <Setter Property="Foreground" Value="#333333" />
+        <Setter Property="Padding" Value="10,5" />
+        <Setter Property="CornerRadius" Value="4" />
+    </Style>
+    
+    <Style Selector="Button.secondary:pointerover">
+        <Setter Property="Background" Value="#FEE5D1" />
+    </Style>
+    
+    <!-- Style dla pól tekstowych -->
+    <Style Selector="TextBox">
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="#CCCCCC" />
+    </Style>
+    
+    <!-- Style dla kontrolek listy -->
+    <Style Selector="ListBox">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+    
+    <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+        <Setter Property="Background" Value="#ED8451" />
+    </Style>
 </Styles>

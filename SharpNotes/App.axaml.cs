@@ -24,15 +24,15 @@ public partial class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
         var services = new ServiceCollection();
-        
-        string connectionString = @"Server=(localdb)\MSSQLLocalDB;Database=SharpNotesDb;Trusted_Connection=True;";
+
+        string connectionString = "Data Source=localhost;Initial Catalog=JiPP4_SharpNotes;User Id=sa;Password=JiPP4@Passw0rd;Encrypt=False;";
         DatabaseSetup.ConfigureServices(services, connectionString);
-        
+
         services.AddSingleton<NotesService>();
         services.AddSingleton<MainWindowViewModel>();
-        
+
         _serviceProvider = services.BuildServiceProvider();
-        
+
         try
         {
             DatabaseSetup.InitializeDatabase(_serviceProvider);
@@ -41,7 +41,7 @@ public partial class App : Application
         {
             Console.WriteLine($"Błąd podczas inicjalizacji bazy danych: {ex.Message}");
         }
-        
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             DisableAvaloniaDataAnnotationValidation();
