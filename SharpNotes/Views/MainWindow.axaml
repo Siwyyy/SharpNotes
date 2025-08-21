@@ -3,6 +3,7 @@
         xmlns:vm="using:SharpNotes.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="using:SharpNotes.Controls"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="SharpNotes.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -10,34 +11,67 @@
         Title="SharpNotes">
 
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
-
-    <Grid ColumnDefinitions="Auto, *" Background="#FFF9F2">
+    <Grid ColumnDefinitions="250, *" Background="#FFF9F2">
+        <!-- Panel boczny z notatkami -->
         <Border Grid.Column="0" Margin="5" Padding="5" Background="#FEDABE" CornerRadius="5">
-            <StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Button>New note</Button>
-                    <Button>Refresh</Button>
-                </StackPanel>
-            </StackPanel>
-        </Border>
-        <Border Grid.Column="1" Margin="5" Padding="5" Background="#ED8451" CornerRadius="5">
             <Grid RowDefinitions="Auto, *">
-                <Border Grid.Row="0" Background="#FEDABE" Margin="5" Padding="5" CornerRadius="5">
-                    <TextBlock Text="{Binding Greeting}"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center" />
-                </Border>
-                <Border Grid.Row="1" Background="#FEDABE" Margin="5" Padding="5" CornerRadius="5">
-                    <TextBlock Text="Tu będą notatki" />
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="5" Margin="0,0,0,5">
+                    <Button Content="New note"
+                            Padding="10,5"
+                            Background="#ED8451"
+                            Foreground="White" />
+
+                    <Button Content="Refresh"
+                            Padding="10,5"
+                            Command="{Binding LoadNotesCommand}"
+                            Background="#ED8451"
+                            Foreground="White" />
+                </StackPanel>
+
+                <!-- Lista notatek -->
+                <ScrollViewer Grid.Row="1">
+                    <ItemsControl Items="{Binding Notes}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Padding="0"
+                                        Background="Transparent"
+                                        Command="{Binding $parent[Window].DataContext.OnSelectedNoteChanged}"
+                                        CommandParameter="{Binding}">
+                                    <controls:NoteListItem />
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <!-- Wskaźnik ładowania -->
+                <Border Grid.Row="1"
+                        Background="#80000000"
+                        IsVisible="{Binding IsLoading}">
+                    <ProgressBar IsIndeterminate="True"
+                                 VerticalAlignment="Center"
+                                 HorizontalAlignment="Center" />
                 </Border>
             </Grid>
         </Border>
 
+        <!-- Panel zawartości notatki -->
+        <Border Grid.Column="1" Margin="5" Padding="5" Background="#ED8451" CornerRadius="5">
+            <Grid RowDefinitions="Auto, *">
+                <Border Grid.Row="0" Background="#FEDABE" Margin="5" Padding="10" CornerRadius="5">
+                    <TextBlock Text="{Binding TitleTextBox}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontWeight="Bold"
+                               FontSize="16" />
+                </Border>
+                <Border Grid.Row="1" Background="#FEDABE" Margin="5" Padding="10" CornerRadius="5">
+                    <TextBlock Text="{Binding SelectedNote.Content}" TextWrapping="Wrap" />
+                </Border>
+            </Grid>
+        </Border>
     </Grid>
-
 </Window>

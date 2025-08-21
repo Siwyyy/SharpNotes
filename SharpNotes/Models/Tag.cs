@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 
-namespace SharpNotes.Models
+namespace SharpNotes.Models;
+
+public class Tag
 {
-    public class Tag
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public ICollection<NoteTag> NoteTags { get; set; } = new List<NoteTag>();
-    }
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public ICollection<NoteTag> NoteTags { get; set; } = new List<NoteTag>();
 }

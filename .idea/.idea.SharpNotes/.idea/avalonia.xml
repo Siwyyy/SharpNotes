@@ -4,7 +4,9 @@
     <option name="projectPerEditor">
       <map>
         <entry key="SharpNotes/App.axaml" value="SharpNotes/SharpNotes.csproj" />
+        <entry key="SharpNotes/Controls/NoteListItem.axaml" value="SharpNotes/SharpNotes.csproj" />
         <entry key="SharpNotes/Styles/Default.axaml" value="SharpNotes/SharpNotes.csproj" />
+        <entry key="SharpNotes/Styles/DefaultStyles.axaml" value="SharpNotes/SharpNotes.csproj" />
         <entry key="SharpNotes/Views/MainWindow.axaml" value="SharpNotes/SharpNotes.csproj" />
       </map>
     </option>

@@ -1,0 +1,35 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:models="using:SharpNotes.Models"
+             mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="60"
+             x:Class="SharpNotes.Controls.NoteListItem"
+             x:DataType="models:Note">
+    
+    <Border Background="#FEDABE" 
+            CornerRadius="4" 
+            Margin="2"
+            Padding="8,4">
+        <Grid RowDefinitions="Auto,Auto">
+            <TextBlock Grid.Row="0" 
+                       Text="{Binding Title}" 
+                       FontWeight="Bold"
+                       TextTrimming="CharacterEllipsis" />
+            
+            <StackPanel Grid.Row="1" 
+                        Orientation="Horizontal" 
+                        Spacing="5">
+                <TextBlock Text="{Binding ModifiedAt, StringFormat=\{0:dd.MM.yyyy\}}" 
+                           FontSize="10" 
+                           Foreground="#555555" />
+                
+                <TextBlock Text="★" 
+                           FontSize="10" 
+                           Foreground="#ED8451"
+                           IsVisible="{Binding IsFavorite}" />
+            </StackPanel>
+        </Grid>
+    </Border>
+    
+</UserControl>
