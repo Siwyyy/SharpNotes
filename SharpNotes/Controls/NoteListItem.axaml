@@ -6,30 +6,27 @@
              mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="60"
              x:Class="SharpNotes.Controls.NoteListItem"
              x:DataType="models:Note">
-    
-    <Border Background="#FEDABE" 
-            CornerRadius="4" 
-            Margin="2"
-            Padding="8,4">
-        <Grid RowDefinitions="Auto,Auto">
-            <TextBlock Grid.Row="0" 
-                       Text="{Binding Title}" 
-                       FontWeight="Bold"
-                       TextTrimming="CharacterEllipsis" />
-            
-            <StackPanel Grid.Row="1" 
-                        Orientation="Horizontal" 
-                        Spacing="5">
-                <TextBlock Text="{Binding ModifiedAt, StringFormat=\{0:dd.MM.yyyy\}}" 
-                           FontSize="10" 
-                           Foreground="#555555" />
-                
-                <TextBlock Text="★" 
-                           FontSize="10" 
-                           Foreground="#ED8451"
-                           IsVisible="{Binding IsFavorite}" />
-            </StackPanel>
-        </Grid>
-    </Border>
-    
+
+
+    <Grid RowDefinitions="Auto,Auto">
+        <TextBlock Grid.Row="0"
+                   Text="{Binding Title}"
+                   FontWeight="Bold"
+                   TextTrimming="CharacterEllipsis" />
+
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal"
+                    Spacing="5">
+            <TextBlock Text="{Binding ModifiedAt, StringFormat=\{0:dd.MM.yyyy\}}"
+                       FontSize="10"
+                       Foreground="{StaticResource TextLightBrush}" />
+
+            <TextBlock Text="★"
+                       FontSize="10"
+                       Foreground="{StaticResource GoldBrush}"
+                       IsVisible="{Binding IsFavorite}" />
+        </StackPanel>
+    </Grid>
+
+
 </UserControl>

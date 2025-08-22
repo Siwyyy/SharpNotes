@@ -14,35 +14,33 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
-    <Grid ColumnDefinitions="250, *" Background="#FFF9F2">
+    <Grid ColumnDefinitions="250, *" Background="{StaticResource BackgroundBrush}">
         <!-- Panel boczny z notatkami -->
-        <Border Grid.Column="0" Margin="5" Padding="5" Background="#FEDABE" CornerRadius="5">
+        <Border Margin="5">
             <Grid RowDefinitions="Auto, Auto, *">
-                <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="5" Margin="0,0,0,5">
-                    <Button Content="Nowa"
-                            Padding="10,5"
+                <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="5"
+                            Margin="0,0,0,5">
+                    <Button Classes="toolbox"
+                            Content="&#xE710;"
                             Command="{Binding CreateNewNoteCommand}"
-                            Background="#ED8451"
-                            Foreground="White" />
-
-                    <Button Content="Odśwież"
-                            Padding="10,5"
+                            ToolTip.Tip="New note" />
+                    <Button Classes="toolbox"
+                            Content="&#xE72C;"
                             Command="{Binding LoadNotesCommand}"
-                            Background="#ED8451"
-                            Foreground="White" />
+                            ToolTip.Tip="Refresh notes" />
                 </StackPanel>
-                
+
                 <!-- Wyszukiwarka -->
-                <Grid Grid.Row="1" ColumnDefinitions="*, Auto" Margin="0,0,0,5">
-                    <TextBox Grid.Column="0" 
-                             Text="{Binding SearchText}" 
+                <Grid Grid.Row="1" ColumnDefinitions="*, Auto" Margin="5">
+                    <TextBox Grid.Column="0"
+                             Text="{Binding SearchText}"
                              Watermark="Szukaj..."
-                             Margin="0,0,5,0"/>
-                    <Button Grid.Column="1" 
-                            Content="🔍"
+                             Margin="0,0,5,0" />
+                    <Button Grid.Column="1"
+                            Classes="toolbox"
+                            Content=""
                             Command="{Binding SearchCommand}"
-                            Background="#ED8451"
-                            Foreground="White" />
+                            ToolTip.Tip="Search" />
                 </Grid>
 
                 <!-- Lista notatek -->
@@ -50,8 +48,10 @@
                     <ItemsControl ItemsSource="{Binding Notes}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Button Classes="primary" Command="{Binding $parent[Window].DataContext.SelectNoteCommand}"
-                                        CommandParameter="{Binding}">
+                                <Button Classes="primary"
+                                        Command="{Binding $parent[Window].DataContext.SelectNoteCommand}"
+                                        CommandParameter="{Binding}"
+                                        HorizontalAlignment="Stretch">
                                     <controls:NoteListItem />
                                 </Button>
                             </DataTemplate>
@@ -61,7 +61,7 @@
 
                 <!-- Wskaźnik ładowania -->
                 <Border Grid.Row="2"
-                        Background="#80000000"
+                        Background="{StaticResource OverlayBrush}"
                         IsVisible="{Binding IsLoading}">
                     <ProgressBar IsIndeterminate="True"
                                  VerticalAlignment="Center"
@@ -71,31 +71,33 @@
         </Border>
 
         <!-- Panel zawartości notatki -->
-        <Border Grid.Column="1" Margin="5" Padding="5" Background="#ED8451" CornerRadius="5">
+        <Border Grid.Column="1" Margin="5" Padding="5" Background="{StaticResource GoldBrush}" CornerRadius="5">
             <Grid RowDefinitions="Auto, *, Auto">
                 <!-- Tytuł notatki -->
-                <Border Grid.Row="0" Background="#FEDABE" Margin="5" Padding="10" CornerRadius="5">
+                <Border Grid.Row="0" Background="{StaticResource BackgroundBrush}" Margin="5" Padding="10"
+                        CornerRadius="5">
                     <TextBlock Text="{Binding TitleTextBox}"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                FontWeight="Bold"
                                FontSize="16" />
                 </Border>
-                
+
                 <!-- Zawartość notatki - tryb widoku lub edycji -->
-                <Border Grid.Row="1" Background="#FEDABE" Margin="5" Padding="10" CornerRadius="5">
+                <Border Grid.Row="1" Background="{StaticResource BackgroundBrush}" Margin="5" Padding="10"
+                        CornerRadius="5">
                     <Grid>
                         <!-- Tryb widoku -->
-                        <TextBlock Text="{Binding SelectedNote.Content}" 
-                                   TextWrapping="Wrap" 
+                        <TextBlock Text="{Binding SelectedNote.Content}"
+                                   TextWrapping="Wrap"
                                    IsVisible="{Binding !IsEditing}" />
-                        
+
                         <!-- Tryb edycji -->
-                        <controls:NoteEditor DataContext="{Binding SelectedNote}" 
+                        <controls:NoteEditor DataContext="{Binding SelectedNote}"
                                              IsVisible="{Binding $parent[Window].DataContext.IsEditing}" />
-                        
+
                         <!-- Wskaźnik zapisywania -->
-                        <Border Background="#80000000"
+                        <Border Background="{StaticResource OverlayBrush}"
                                 IsVisible="{Binding IsSaving}">
                             <ProgressBar IsIndeterminate="True"
                                          VerticalAlignment="Center"
@@ -103,28 +105,31 @@
                         </Border>
                     </Grid>
                 </Border>
-                
+
                 <!-- Przyciski akcji -->
-                <StackPanel Grid.Row="2" 
-                            Orientation="Horizontal" 
+                <StackPanel Grid.Row="2"
+                            Orientation="Horizontal"
                             HorizontalAlignment="Center"
                             Spacing="5"
                             Margin="5">
-                    <Button Content="Edytuj"
+                    <Button Classes="toolbox"
+                            Content="&#xE70F;"
                             Command="{Binding EditNoteCommand}"
                             IsVisible="{Binding !IsEditing}"
                             IsEnabled="{Binding SelectedNote, Converter={x:Static ObjectConverters.IsNotNull}}"
-                            Background="#FEDABE" />
-                    
-                    <Button Content="Zapisz"
+                            ToolTip.Tip="Edit" />
+
+                    <Button Classes="toolbox"
+                            Content=""
                             Command="{Binding SaveNoteCommand}"
                             IsVisible="{Binding IsEditing}"
-                            Background="#FEDABE" />
-                    
-                    <Button Content="Usuń"
+                            ToolTip.Tip="Save" />
+
+                    <Button Classes="toolbox"
+                            Content=""
                             Command="{Binding DeleteNoteCommand}"
                             IsEnabled="{Binding SelectedNote, Converter={x:Static ObjectConverters.IsNotNull}}"
-                            Background="#FEDABE" />
+                            ToolTip.Tip="Delete" />
                 </StackPanel>
             </Grid>
         </Border>

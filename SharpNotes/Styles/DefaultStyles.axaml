@@ -4,7 +4,7 @@
         <Border Padding="20">
             <StackPanel Spacing="10">
                 <Button Content="Przycisk" Classes="primary" />
-                <Button Content="Przycisk" Classes="secondary" />
+                <Button Content="&#xE72C;" Classes="toolbox" />
                 <TextBox Watermark="Pole tekstowe" />
             </StackPanel>
         </Border>
@@ -12,25 +12,27 @@
 
     <!-- Style dla przycisków -->
     <Style Selector="Button.primary">
-        <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
+        <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
         <Setter Property="Foreground" Value="White" />
         <Setter Property="Padding" Value="10,5" />
         <Setter Property="CornerRadius" Value="4" />
     </Style>
 
     <Style Selector="Button.primary:pointerover">
-        <Setter Property="Background" Value="{StaticResource PrimaryLightBrush}" />
+        <Setter Property="Background" Value="{StaticResource GoldLightBrush}" />
     </Style>
 
-    <Style Selector="Button.secondary">
-        <Setter Property="Background" Value="{StaticResource SecondaryBrush}" />
-        <Setter Property="Foreground" Value="{StaticResource TextDarkBrush}" />
+
+    <Style Selector="Button.toolbox">
+        <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource WhiteBrush}" />
         <Setter Property="Padding" Value="10,5" />
         <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="FontFamily" Value="Segoe Fluent Icons" />
     </Style>
 
-    <Style Selector="Button.secondary:pointerover">
-        <Setter Property="Background" Value="{StaticResource SecondaryLightBrush}" />
+    <Style Selector="Button.toolbox:pointerover">
+        <Setter Property="Background" Value="{StaticResource GoldLightBrush}" />
     </Style>
 
     <!-- Style dla pól tekstowych -->
@@ -46,6 +48,6 @@
     </Style>
 
     <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
-        <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
+        <Setter Property="Background" Value="{StaticResource GoldBrush}" />
     </Style>
 </Styles>
