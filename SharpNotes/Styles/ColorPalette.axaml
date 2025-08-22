@@ -1,0 +1,20 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Colors -->
+    <Color x:Key="PrimaryColor">#ED8451</Color>
+    <Color x:Key="PrimaryLightColor">#F29A6B</Color>
+    <Color x:Key="SecondaryColor">#FEDABE</Color>
+    <Color x:Key="SecondaryLightColor">#FEE5D1</Color>
+    <Color x:Key="BackgroundColor">#FFF9F2</Color>
+    <Color x:Key="TextDarkColor">#333333</Color>
+    <Color x:Key="TextLightColor">#555555</Color>
+    
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}"/>
+    <SolidColorBrush x:Key="PrimaryLightBrush" Color="{StaticResource PrimaryLightColor}"/>
+    <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource SecondaryColor}"/>
+    <SolidColorBrush x:Key="SecondaryLightBrush" Color="{StaticResource SecondaryLightColor}"/>
+    <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource BackgroundColor}"/>
+    <SolidColorBrush x:Key="TextDarkBrush" Color="{StaticResource TextDarkColor}"/>
+    <SolidColorBrush x:Key="TextLightBrush" Color="{StaticResource TextLightColor}"/>
+</ResourceDictionary>

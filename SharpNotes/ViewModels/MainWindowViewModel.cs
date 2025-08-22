@@ -1,4 +1,4 @@
-﻿﻿using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -13,7 +13,7 @@ namespace SharpNotes.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    private readonly NotesService _notesService;
+    private readonly NotesService _notesService = null!;
     private CancellationTokenSource? _searchCts;
 
     [ObservableProperty] private string _titleTextBox = "Choose a note to open, or create a new one!";
@@ -23,6 +23,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private bool _isLoading;
     [ObservableProperty] private bool _isEditing;
     [ObservableProperty] private bool _isSaving;
+
 
     public MainWindowViewModel(NotesService notesService)
     {
@@ -56,7 +57,7 @@ public partial class MainWindowViewModel : ViewModelBase
         // Anuluj poprzednie wyszukiwanie, jeśli jest w trakcie
         _searchCts?.Cancel();
         _searchCts = new CancellationTokenSource();
-        
+
         IsLoading = true;
 
         try
@@ -69,11 +70,11 @@ public partial class MainWindowViewModel : ViewModelBase
 
             // Równoległe wyszukiwanie z wykorzystaniem indeksowania
             var results = await _notesService.IndexNotesForSearchAsync(SearchText, _searchCts.Token);
-            
+
             // Pobierz pełne dane notatek dla znalezionych wyników
             var noteIds = results.OrderByDescending(r => r.Value).Select(r => r.Key).ToList();
             var notes = await Task.WhenAll(noteIds.Select(id => _notesService.GetNoteByIdAsync(id)));
-            
+
             Notes.Clear();
             foreach (var note in notes)
             {
@@ -110,9 +111,9 @@ public partial class MainWindowViewModel : ViewModelBase
     private async Task SaveNote()
     {
         if (SelectedNote == null) return;
-        
+
         IsSaving = true;
-        
+
         try
         {
             await _notesService.UpdateNoteAsync(SelectedNote);
@@ -134,10 +135,10 @@ public partial class MainWindowViewModel : ViewModelBase
             CreatedAt = DateTime.Now,
             ModifiedAt = DateTime.Now
         };
-        
+
         var addedNote = await _notesService.AddNoteAsync(newNote);
         await LoadNotesCommand.ExecuteAsync(null);
-        
+
         // Wybierz nową notatkę
         SelectedNote = Notes.FirstOrDefault(n => n.Id == addedNote.Id);
         IsEditing = true;
