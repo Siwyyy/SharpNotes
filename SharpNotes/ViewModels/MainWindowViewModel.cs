@@ -46,7 +46,7 @@ public partial class MainWindowViewModel : ViewModelBase
             {
                 Notes.Add(note);
             }
-            
+
             // Odśwież listę tagów
             await TagsViewModel.LoadTagsCommand.ExecuteAsync(null);
         }
@@ -95,15 +95,15 @@ public partial class MainWindowViewModel : ViewModelBase
             IsLoading = false;
         }
     }
-    
+
     [RelayCommand]
     private async Task SearchByTag(Tag tag)
     {
         if (tag == null)
             return;
-            
+
         IsLoading = true;
-        
+
         try
         {
             var notes = await _notesService.GetNotesByTagAsync(tag.Id);
@@ -124,7 +124,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         SelectedNote = note;
         IsEditing = false;
-        
+
         // Załaduj tagi dla notatki
         TagsViewModel.LoadNoteTagsCommand.Execute(note);
     }
@@ -138,23 +138,35 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand]
-    private async Task SaveNote()
+[RelayCommand]
+private async Task SaveNote()
+{
+    if (SelectedNote == null) return;
+
+    IsSaving = true;
+
+    try
     {
-        if (SelectedNote == null) return;
-
-        IsSaving = true;
-
-        try
-        {
-            await _notesService.UpdateNoteAsync(SelectedNote);
-            IsEditing = false;
-        }
-        finally
-        {
-            IsSaving = false;
-        }
+        await _notesService.UpdateNoteAsync(SelectedNote);
+        
+        // Odświeżamy notatkę, pobierając ją ponownie z bazy danych
+        var noteId = SelectedNote.Id;
+        var refreshedNote = await _notesService.GetNoteByIdAsync(noteId);
+        
+        // Odświeżamy listę wszystkich notatek
+        await LoadNotesCommand.ExecuteAsync(null);
+        
+        // Znajdujemy naszą notatkę w odświeżonej liście
+        SelectedNote = Notes.FirstOrDefault(n => n.Id == noteId);
+        
+        // Wyjście z trybu edycji
+        IsEditing = false;
     }
+    finally
+    {
+        IsSaving = false;
+    }
+}
 
     [RelayCommand]
     private async Task CreateNewNote()
@@ -173,7 +185,7 @@ public partial class MainWindowViewModel : ViewModelBase
         // Wybierz nową notatkę
         SelectedNote = Notes.FirstOrDefault(n => n.Id == addedNote.Id);
         IsEditing = true;
-        
+
         // Załaduj tagi dla notatki
         TagsViewModel.LoadNoteTagsCommand.Execute(SelectedNote);
     }
@@ -187,7 +199,7 @@ public partial class MainWindowViewModel : ViewModelBase
         await LoadNotesCommand.ExecuteAsync(null);
         SelectedNote = null;
     }
-    
+
     [RelayCommand]
     private void ToggleTagsPanel()
     {

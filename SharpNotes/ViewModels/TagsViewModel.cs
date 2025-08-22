@@ -119,26 +119,20 @@ public partial class TagsViewModel : ViewModelBase
 
         try
         {
-            // Sprawdź czy tag już istnieje w notatce
             bool tagExists = CurrentNote.NoteTags.Any(nt => nt.TagId == tag.Id);
 
             if (!tagExists)
             {
                 await _notesService.AddTagToNoteAsync(CurrentNote.Id, tag.Id);
 
-                // Sprawdź czy tag już istnieje w kolekcji
-                if (!NoteTagsCollection.Any(t => t.Id == tag.Id))
-                {
-                    NoteTagsCollection.Add(tag);
+                // Odśwież notatkę, aby pobrać zaktualizowane powiązania z bazy danych
+                CurrentNote = await _notesService.GetNoteByIdAsync(CurrentNote.Id);
 
-                    // Dodaj NoteTag do CurrentNote
-                    CurrentNote.NoteTags.Add(new NoteTag
-                    {
-                        NoteId = CurrentNote.Id,
-                        TagId = tag.Id,
-                        Note = CurrentNote,
-                        Tag = tag
-                    });
+                // Zaktualizuj kolekcję tagów
+                NoteTagsCollection.Clear();
+                foreach (var noteTag in CurrentNote.NoteTags)
+                {
+                    NoteTagsCollection.Add(noteTag.Tag);
                 }
             }
         }

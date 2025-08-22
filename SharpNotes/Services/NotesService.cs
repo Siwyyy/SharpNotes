@@ -58,7 +58,12 @@ public class NotesService
     {
         note.ModifiedAt = DateTime.Now;
 
+        // Zapisz tylko zmiany w podstawowych właściwościach notatki
         _dbContext.Entry(note).State = EntityState.Modified;
+        
+        // Wyłącz śledzenie zmian dla kolekcji NoteTags
+        _dbContext.Entry(note).Collection(n => n.NoteTags).IsModified = false;
+        
         await _dbContext.SaveChangesAsync();
     }
 
