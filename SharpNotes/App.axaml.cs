@@ -30,6 +30,7 @@ public partial class App : Application
 
         services.AddSingleton<NotesService>();
         services.AddSingleton<MainWindowViewModel>();
+        services.AddSingleton<TagsViewModel>();
 
         _serviceProvider = services.BuildServiceProvider();
 

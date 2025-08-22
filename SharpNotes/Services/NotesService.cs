@@ -18,7 +18,6 @@ public class NotesService
         _dbContext = dbContext;
     }
 
-    // Asynchroniczne operacje CRUD dla notatek
 
     public async Task<List<Note>> GetAllNotesAsync()
     {
@@ -73,7 +72,6 @@ public class NotesService
         }
     }
 
-    // Asynchroniczne metody dla tagów
 
     public async Task<List<Tag>> GetAllTagsAsync()
     {
@@ -88,13 +86,89 @@ public class NotesService
         return tag;
     }
 
-    // Równoległe indeksowanie notatek do wyszukiwania
+
+    public async Task<Tag> GetTagByIdAsync(int id)
+    {
+        return await _dbContext.Tags.FindAsync(id) ?? throw new InvalidOperationException();
+    }
+
+    public async Task<Tag> GetOrCreateTagAsync(string tagName)
+    {
+        var tag = await _dbContext.Tags.FirstOrDefaultAsync(t => t.Name.ToLower() == tagName.ToLower());
+        if (tag == null)
+        {
+            tag = new Tag { Name = tagName };
+            _dbContext.Tags.Add(tag);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        return tag;
+    }
+
+    public async Task AddTagToNoteAsync(int noteId, int tagId)
+    {
+        var exists = await _dbContext.NoteTags
+            .AnyAsync(nt => nt.NoteId == noteId && nt.TagId == tagId);
+
+        if (!exists)
+        {
+            var note = await GetNoteByIdAsync(noteId);
+            var tag = await GetTagByIdAsync(tagId);
+
+            var noteTag = new NoteTag
+            {
+                Note = note,
+                Tag = tag,
+                NoteId = noteId,
+                TagId = tagId
+            };
+
+            _dbContext.NoteTags.Add(noteTag);
+            await _dbContext.SaveChangesAsync();
+        }
+    }
+
+    public async Task RemoveTagFromNoteAsync(int noteId, int tagId)
+    {
+        var noteTag = await _dbContext.NoteTags
+            .FirstOrDefaultAsync(nt => nt.NoteId == noteId && nt.TagId == tagId);
+
+        if (noteTag != null)
+        {
+            _dbContext.NoteTags.Remove(noteTag);
+            await _dbContext.SaveChangesAsync();
+        }
+    }
+
+    public async Task<List<Note>> GetNotesByTagAsync(int tagId)
+    {
+        return await _dbContext.Notes
+            .Include(n => n.NoteTags)
+            .ThenInclude(nt => nt.Tag)
+            .Where(n => n.NoteTags.Any(nt => nt.TagId == tagId))
+            .ToListAsync();
+    }
+
+    public async Task DeleteTagAsync(int tagId)
+    {
+        var tag = await _dbContext.Tags.FindAsync(tagId);
+        if (tag != null)
+        {
+            var noteTags = await _dbContext.NoteTags
+                .Where(nt => nt.TagId == tagId)
+                .ToListAsync();
+
+            _dbContext.NoteTags.RemoveRange(noteTags);
+            _dbContext.Tags.Remove(tag);
+            await _dbContext.SaveChangesAsync();
+        }
+    }
+
 
     public async Task<Dictionary<int, double>> IndexNotesForSearchAsync(string query, CancellationToken cancellationToken = default)
     {
         var notes = await _dbContext.Notes.ToListAsync(cancellationToken);
 
-        // Symulacja równoległego indeksowania i obliczania ocen dopasowania
         Dictionary<int, double> searchResults = new Dictionary<int, double>();
 
         await Task.Run(() =>
@@ -104,7 +178,6 @@ public class NotesService
                 if (cancellationToken.IsCancellationRequested)
                     return;
 
-                // Proste obliczanie oceny dopasowania (w rzeczywistym projekcie byłby bardziej zaawansowany algorytm)
                 double score = 0;
                 if (note.Title.Contains(query, StringComparison.OrdinalIgnoreCase))
                     score += 2;

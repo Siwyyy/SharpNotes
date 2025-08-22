@@ -3,12 +3,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:models="using:SharpNotes.Models"
-             mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="60"
+             mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="80"
              x:Class="SharpNotes.Controls.NoteListItem"
              x:DataType="models:Note">
 
 
-    <Grid RowDefinitions="Auto,Auto">
+    <Grid RowDefinitions="Auto,Auto,Auto">
         <TextBlock Grid.Row="0"
                    Text="{Binding Title}"
                    FontWeight="Bold"
@@ -26,6 +26,30 @@
                        Foreground="{StaticResource GoldBrush}"
                        IsVisible="{Binding IsFavorite}" />
         </StackPanel>
+        
+        <!-- Tagi notatki -->
+        <ItemsControl Grid.Row="2"
+                      ItemsSource="{Binding NoteTags}"
+                      Margin="0,3,0,0"
+                      MaxHeight="20">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Background="{StaticResource GoldBrush}"
+                            CornerRadius="3"
+                            Padding="3,1"
+                            Margin="0,0,3,3">
+                        <TextBlock Text="{Binding Tag.Name}"
+                                   Foreground="{StaticResource BackgroundBrush}"
+                                   FontSize="8" />
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </Grid>
 
 

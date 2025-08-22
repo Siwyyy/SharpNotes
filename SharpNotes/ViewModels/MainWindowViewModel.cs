@@ -23,11 +23,13 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private bool _isLoading;
     [ObservableProperty] private bool _isEditing;
     [ObservableProperty] private bool _isSaving;
-
+    [ObservableProperty] private bool _isTagsVisible;
+    [ObservableProperty] private TagsViewModel _tagsViewModel;
 
     public MainWindowViewModel(NotesService notesService)
     {
         _notesService = notesService;
+        _tagsViewModel = new TagsViewModel(notesService);
         LoadNotesCommand.Execute(null);
     }
 
@@ -44,6 +46,9 @@ public partial class MainWindowViewModel : ViewModelBase
             {
                 Notes.Add(note);
             }
+            
+            // Odśwież listę tagów
+            await TagsViewModel.LoadTagsCommand.ExecuteAsync(null);
         }
         finally
         {
@@ -90,12 +95,38 @@ public partial class MainWindowViewModel : ViewModelBase
             IsLoading = false;
         }
     }
+    
+    [RelayCommand]
+    private async Task SearchByTag(Tag tag)
+    {
+        if (tag == null)
+            return;
+            
+        IsLoading = true;
+        
+        try
+        {
+            var notes = await _notesService.GetNotesByTagAsync(tag.Id);
+            Notes.Clear();
+            foreach (var note in notes)
+            {
+                Notes.Add(note);
+            }
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
 
     [RelayCommand]
     private void SelectNote(Note note)
     {
         SelectedNote = note;
         IsEditing = false;
+        
+        // Załaduj tagi dla notatki
+        TagsViewModel.LoadNoteTagsCommand.Execute(note);
     }
 
     [RelayCommand]
@@ -142,6 +173,9 @@ public partial class MainWindowViewModel : ViewModelBase
         // Wybierz nową notatkę
         SelectedNote = Notes.FirstOrDefault(n => n.Id == addedNote.Id);
         IsEditing = true;
+        
+        // Załaduj tagi dla notatki
+        TagsViewModel.LoadNoteTagsCommand.Execute(SelectedNote);
     }
 
     [RelayCommand]
@@ -152,6 +186,12 @@ public partial class MainWindowViewModel : ViewModelBase
         await _notesService.DeleteNoteAsync(SelectedNote.Id);
         await LoadNotesCommand.ExecuteAsync(null);
         SelectedNote = null;
+    }
+    
+    [RelayCommand]
+    private void ToggleTagsPanel()
+    {
+        IsTagsVisible = !IsTagsVisible;
     }
 
     partial void OnSelectedNoteChanged(Note? value)
