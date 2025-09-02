@@ -39,7 +39,7 @@ public partial class TagPanelViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadTags()
     {
-        IsLoading = true;
+        // Usunięto ustawianie IsLoading = true
 
         try
         {
@@ -52,7 +52,7 @@ public partial class TagPanelViewModel : ViewModelBase
         }
         finally
         {
-            IsLoading = false;
+            // Usunięto ustawianie IsLoading = false
         }
     }
 
@@ -62,7 +62,7 @@ public partial class TagPanelViewModel : ViewModelBase
         if (string.IsNullOrWhiteSpace(NewTagName))
             return;
 
-        IsLoading = true;
+        // Usunięto ustawianie IsLoading = true
 
         try
         {
@@ -72,7 +72,7 @@ public partial class TagPanelViewModel : ViewModelBase
         }
         finally
         {
-            IsLoading = false;
+            // Usunięto ustawianie IsLoading = false
         }
     }
 
@@ -82,7 +82,7 @@ public partial class TagPanelViewModel : ViewModelBase
         if (SelectedTag == null)
             return;
 
-        IsLoading = true;
+        // Usunięto ustawianie IsLoading = true
 
         try
         {
@@ -95,7 +95,7 @@ public partial class TagPanelViewModel : ViewModelBase
         }
         finally
         {
-            IsLoading = false;
+            // Usunięto ustawianie IsLoading = false
         }
     }
 
@@ -129,7 +129,7 @@ public partial class TagPanelViewModel : ViewModelBase
         if (CurrentNote == null || tag == null)
             return;
 
-        IsTagging = true;
+        // Usunięto ustawianie IsTagging = true
 
         try
         {
@@ -162,7 +162,7 @@ public partial class TagPanelViewModel : ViewModelBase
         }
         finally
         {
-            IsTagging = false;
+            // Usunięto ustawianie IsTagging = false
         }
     }
 
@@ -172,7 +172,7 @@ public partial class TagPanelViewModel : ViewModelBase
         if (CurrentNote == null || tag == null)
             return;
 
-        IsTagging = true;
+        // Usunięto ustawianie IsTagging = true
 
         try
         {
@@ -197,7 +197,7 @@ public partial class TagPanelViewModel : ViewModelBase
         }
         finally
         {
-            IsTagging = false;
+            // Usunięto ustawianie IsTagging = false
         }
     }
 }

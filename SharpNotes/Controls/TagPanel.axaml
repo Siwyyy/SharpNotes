@@ -107,13 +107,6 @@
             </Grid>
         </Border>
 
-        <!-- Wskaźnik ładowania -->
-        <Border Grid.RowSpan="5"
-                Background="{StaticResource OverlayBrush}"
-                IsVisible="{Binding IsLoading}">
-            <ProgressBar IsIndeterminate="True"
-                         VerticalAlignment="Center"
-                         HorizontalAlignment="Center" />
-        </Border>
+        <!-- Usunięty wskaźnik ładowania -->
     </Grid>
 </UserControl>

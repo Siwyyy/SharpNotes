@@ -64,14 +64,7 @@
                     </ItemsControl>
                 </ScrollViewer>
 
-                <!-- Wskaźnik ładowania -->
-                <Border Grid.Row="2"
-                        Background="{StaticResource OverlayBrush}"
-                        IsVisible="{Binding IsLoading}">
-                    <ProgressBar IsIndeterminate="True"
-                                 VerticalAlignment="Center"
-                                 HorizontalAlignment="Center" />
-                </Border>
+                <!-- Usunięty wskaźnik ładowania -->
             </Grid>
         </Border>
 
@@ -126,13 +119,7 @@
                         <controls:NoteEditor DataContext="{Binding SelectedNote}"
                                              IsVisible="{Binding DataContext.IsEditing, ElementName=MainWindowElement}" />
 
-                        <!-- Wskaźnik zapisywania -->
-                        <Border Background="{StaticResource OverlayBrush}"
-                                IsVisible="{Binding IsSaving}">
-                            <ProgressBar IsIndeterminate="True"
-                                         VerticalAlignment="Center"
-                                         HorizontalAlignment="Center" />
-                        </Border>
+                        <!-- Usunięty wskaźnik zapisywania -->
                     </Grid>
                 </Border>
 

@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿﻿using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -20,9 +20,10 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private string _searchText = string.Empty;
     [ObservableProperty] private ObservableCollection<Note> _notes = new();
     [ObservableProperty] private Note? _selectedNote;
+    // Zachowujemy te właściwości, ale nie będziemy już ich ustawiać na true
     [ObservableProperty] private bool _isLoading;
-    [ObservableProperty] private bool _isEditing;
     [ObservableProperty] private bool _isSaving;
+    [ObservableProperty] private bool _isEditing;
     [ObservableProperty] private bool _isTagsVisible;
     [ObservableProperty] private TagPanelViewModel _tagPanelViewModel;
 
@@ -37,7 +38,7 @@ public partial class MainWindowViewModel : ViewModelBase
         LoadNotesCommand.Execute(null);
     }
 
-// Metoda obsługująca zdarzenie zmiany tagów
+    // Metoda obsługująca zdarzenie zmiany tagów
     private void TagPanelViewModelTagPanelChanged(object? sender, EventArgs e)
     {
         // Odświeżamy listę notatek
@@ -47,7 +48,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadNotes()
     {
-        IsLoading = true;
+        // Usuwamy ustawianie IsLoading = true
 
         try
         {
@@ -63,7 +64,7 @@ public partial class MainWindowViewModel : ViewModelBase
         }
         finally
         {
-            IsLoading = false;
+            // Usuwamy ustawianie IsLoading = false
         }
     }
 
@@ -74,7 +75,7 @@ public partial class MainWindowViewModel : ViewModelBase
         _searchCts?.Cancel();
         _searchCts = new CancellationTokenSource();
 
-        IsLoading = true;
+        // Usuwamy ustawianie IsLoading = true
 
         try
         {
@@ -103,7 +104,7 @@ public partial class MainWindowViewModel : ViewModelBase
         }
         finally
         {
-            IsLoading = false;
+            // Usuwamy ustawianie IsLoading = false
         }
     }
 
@@ -113,7 +114,7 @@ public partial class MainWindowViewModel : ViewModelBase
         if (tag == null)
             return;
 
-        IsLoading = true;
+        // Usuwamy ustawianie IsLoading = true
 
         try
         {
@@ -126,7 +127,7 @@ public partial class MainWindowViewModel : ViewModelBase
         }
         finally
         {
-            IsLoading = false;
+            // Usuwamy ustawianie IsLoading = false
         }
     }
 
@@ -154,7 +155,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         if (SelectedNote == null) return;
 
-        IsSaving = true;
+        // Usuwamy ustawianie IsSaving = true
 
         try
         {
@@ -175,7 +176,7 @@ public partial class MainWindowViewModel : ViewModelBase
         }
         finally
         {
-            IsSaving = false;
+            // Usuwamy ustawianie IsSaving = false
         }
     }
 
