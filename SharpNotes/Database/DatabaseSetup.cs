@@ -14,10 +14,11 @@ public static class DatabaseSetup
 
     public static void InitializeDatabase(IServiceProvider? serviceProvider)
     {
-        using (var scope = serviceProvider.CreateScope())
-        {
-            var dbContext = scope.ServiceProvider.GetRequiredService<NotesDbContext>();
-            dbContext.Database.Migrate();
-        }
+        if (serviceProvider != null)
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<NotesDbContext>();
+                dbContext.Database.Migrate();
+            }
     }
 }

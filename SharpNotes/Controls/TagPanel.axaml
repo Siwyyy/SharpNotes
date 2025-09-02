@@ -6,43 +6,44 @@
              xmlns:models="using:SharpNotes.Models"
              mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="450"
              x:Class="SharpNotes.Controls.TagPanel"
-             x:DataType="vm:TagsViewModel">
+             x:Name="TagPanelName"
+             x:DataType="vm:TagPanelViewModel">
 
     <Grid RowDefinitions="Auto,Auto,*,Auto,*">
         <!-- Nagłówek -->
-        <TextBlock Grid.Row="0" 
-                   Text="Zarządzanie tagami" 
-                   FontWeight="Bold" 
+        <TextBlock Grid.Row="0"
+                   Text="Zarządzanie tagami"
+                   FontWeight="Bold"
                    HorizontalAlignment="Center"
                    Margin="0,5,0,10" />
-        
+
         <!-- Dodawanie nowego tagu -->
         <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="5">
-            <TextBox Grid.Column="0" 
-                     Text="{Binding NewTagName}" 
-                     Watermark="Nowy tag..." 
+            <TextBox Grid.Column="0"
+                     Text="{Binding NewTagName}"
+                     Watermark="Nowy tag..."
                      Margin="0,0,5,0" />
-            <Button Grid.Column="1" 
-                    Classes="toolbox" 
-                    Content="&#xE710;" 
-                    Command="{Binding AddTagCommand}" 
+            <Button Grid.Column="1"
+                    Classes="toolbox"
+                    Content="&#xE710;"
+                    Command="{Binding AddTagCommand}"
                     ToolTip.Tip="Dodaj tag" />
         </Grid>
-        
+
         <!-- Lista wszystkich tagów -->
-        <Border Grid.Row="2" 
-                BorderBrush="{StaticResource GoldBrush}" 
-                BorderThickness="1" 
-                CornerRadius="4" 
+        <Border Grid.Row="2"
+                BorderBrush="{StaticResource GoldBrush}"
+                BorderThickness="1"
+                CornerRadius="4"
                 Margin="5">
             <Grid RowDefinitions="Auto,*">
-                <TextBlock Grid.Row="0" 
-                           Text="Wszystkie tagi" 
-                           Margin="5" 
+                <TextBlock Grid.Row="0"
+                           Text="Wszystkie tagi"
+                           Margin="5"
                            FontWeight="Bold" />
-                <ListBox Grid.Row="1" 
-                         ItemsSource="{Binding AllTags}" 
-                         SelectedItem="{Binding SelectedTag}" 
+                <ListBox Grid.Row="1"
+                         ItemsSource="{Binding AllTags}"
+                         SelectedItem="{Binding SelectedTag}"
                          Margin="5">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="models:Tag">
@@ -54,50 +55,50 @@
                 </ListBox>
             </Grid>
         </Border>
-        
+
         <!-- Przyciski akcji dla tagów -->
-        <StackPanel Grid.Row="3" 
-                    Orientation="Horizontal" 
-                    HorizontalAlignment="Center" 
+        <StackPanel Grid.Row="3"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
                     Margin="5">
-            <Button Classes="toolbox" 
-                    Content="&#xE8FB;" 
-                    Command="{Binding AddTagToNoteCommand}" 
-                    CommandParameter="{Binding SelectedTag}" 
+            <Button Classes="toolbox"
+                    Content="&#xE8FB;"
+                    Command="{Binding AddTagToNoteCommand}"
+                    CommandParameter="{Binding SelectedTag}"
                     Margin="0,0,5,0"
                     ToolTip.Tip="Dodaj tag do notatki" />
-            <Button Classes="toolbox" 
-                    Content="&#xE74D;" 
-                    Command="{Binding DeleteTagCommand}" 
+            <Button Classes="toolbox"
+                    Content="&#xE74D;"
+                    Command="{Binding DeleteTagCommand}"
                     ToolTip.Tip="Usuń tag" />
         </StackPanel>
-        
+
         <!-- Tagi bieżącej notatki -->
-        <Border Grid.Row="4" 
-                BorderBrush="{StaticResource GoldBrush}" 
-                BorderThickness="1" 
-                CornerRadius="4" 
+        <Border Grid.Row="4"
+                BorderBrush="{StaticResource GoldBrush}"
+                BorderThickness="1"
+                CornerRadius="4"
                 Margin="5">
             <Grid RowDefinitions="Auto,*">
-                <TextBlock Grid.Row="0" 
-                           Text="Tagi bieżącej notatki" 
-                           Margin="5" 
+                <TextBlock Grid.Row="0"
+                           Text="Tagi bieżącej notatki"
+                           Margin="5"
                            FontWeight="Bold" />
-                <ListBox Grid.Row="1" 
-                         ItemsSource="{Binding NoteTagsCollection}" 
+                <ListBox Grid.Row="1"
+                         ItemsSource="{Binding NoteTagsCollection}"
                          Margin="5">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="models:Tag">
                             <Grid ColumnDefinitions="*,Auto">
                                 <TextBlock Grid.Column="0" Text="{Binding Name}" />
-                                <Button Grid.Column="1" 
-                                        Classes="toolbox" 
-                                        Content="&#xE74D;" 
-                                        Command="{Binding $parent[UserControl].DataContext.RemoveTagFromNoteCommand}" 
-                                        CommandParameter="{Binding}" 
-                                        Width="24" 
-                                        Height="24" 
-                                        Padding="0" 
+                                <Button Grid.Column="1"
+                                        Classes="toolbox"
+                                        Content="&#xE74D;"
+                                        Command="{Binding DataContext.RemoveTagFromNoteCommand, ElementName=TagPanelName}"
+                                        CommandParameter="{Binding}"
+                                        Width="24"
+                                        Height="24"
+                                        Padding="0"
                                         ToolTip.Tip="Usuń tag z notatki" />
                             </Grid>
                         </DataTemplate>
@@ -105,13 +106,13 @@
                 </ListBox>
             </Grid>
         </Border>
-        
+
         <!-- Wskaźnik ładowania -->
-        <Border Grid.RowSpan="5" 
-                Background="{StaticResource OverlayBrush}" 
+        <Border Grid.RowSpan="5"
+                Background="{StaticResource OverlayBrush}"
                 IsVisible="{Binding IsLoading}">
-            <ProgressBar IsIndeterminate="True" 
-                         VerticalAlignment="Center" 
+            <ProgressBar IsIndeterminate="True"
+                         VerticalAlignment="Center"
                          HorizontalAlignment="Center" />
         </Border>
     </Grid>

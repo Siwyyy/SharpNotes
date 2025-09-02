@@ -24,12 +24,23 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private bool _isEditing;
     [ObservableProperty] private bool _isSaving;
     [ObservableProperty] private bool _isTagsVisible;
-    [ObservableProperty] private TagsViewModel _tagsViewModel;
+    [ObservableProperty] private TagPanelViewModel _tagPanelViewModel;
 
     public MainWindowViewModel(NotesService notesService)
     {
         _notesService = notesService;
-        _tagsViewModel = new TagsViewModel(notesService);
+        _tagPanelViewModel = new TagPanelViewModel(notesService);
+
+        // Subskrybujemy event TagsChanged
+        _tagPanelViewModel.TagsChanged += TagPanelViewModelTagPanelChanged;
+
+        LoadNotesCommand.Execute(null);
+    }
+
+// Metoda obsługująca zdarzenie zmiany tagów
+    private void TagPanelViewModelTagPanelChanged(object? sender, EventArgs e)
+    {
+        // Odświeżamy listę notatek
         LoadNotesCommand.Execute(null);
     }
 
@@ -48,7 +59,7 @@ public partial class MainWindowViewModel : ViewModelBase
             }
 
             // Odśwież listę tagów
-            await TagsViewModel.LoadTagsCommand.ExecuteAsync(null);
+            await TagPanelViewModel.LoadTagsCommand.ExecuteAsync(null);
         }
         finally
         {
@@ -126,7 +137,7 @@ public partial class MainWindowViewModel : ViewModelBase
         IsEditing = false;
 
         // Załaduj tagi dla notatki
-        TagsViewModel.LoadNoteTagsCommand.Execute(note);
+        TagPanelViewModel.LoadNoteTagsCommand.Execute(note);
     }
 
     [RelayCommand]
@@ -138,35 +149,35 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
-[RelayCommand]
-private async Task SaveNote()
-{
-    if (SelectedNote == null) return;
-
-    IsSaving = true;
-
-    try
+    [RelayCommand]
+    private async Task SaveNote()
     {
-        await _notesService.UpdateNoteAsync(SelectedNote);
-        
-        // Odświeżamy notatkę, pobierając ją ponownie z bazy danych
-        var noteId = SelectedNote.Id;
-        var refreshedNote = await _notesService.GetNoteByIdAsync(noteId);
-        
-        // Odświeżamy listę wszystkich notatek
-        await LoadNotesCommand.ExecuteAsync(null);
-        
-        // Znajdujemy naszą notatkę w odświeżonej liście
-        SelectedNote = Notes.FirstOrDefault(n => n.Id == noteId);
-        
-        // Wyjście z trybu edycji
-        IsEditing = false;
+        if (SelectedNote == null) return;
+
+        IsSaving = true;
+
+        try
+        {
+            await _notesService.UpdateNoteAsync(SelectedNote);
+
+            // Odświeżamy notatkę, pobierając ją ponownie z bazy danych
+            var noteId = SelectedNote.Id;
+            var refreshedNote = await _notesService.GetNoteByIdAsync(noteId);
+
+            // Odświeżamy listę wszystkich notatek
+            await LoadNotesCommand.ExecuteAsync(null);
+
+            // Znajdujemy naszą notatkę w odświeżonej liście
+            SelectedNote = Notes.FirstOrDefault(n => n.Id == noteId);
+
+            // Wyjście z trybu edycji
+            IsEditing = false;
+        }
+        finally
+        {
+            IsSaving = false;
+        }
     }
-    finally
-    {
-        IsSaving = false;
-    }
-}
 
     [RelayCommand]
     private async Task CreateNewNote()
@@ -187,7 +198,7 @@ private async Task SaveNote()
         IsEditing = true;
 
         // Załaduj tagi dla notatki
-        TagsViewModel.LoadNoteTagsCommand.Execute(SelectedNote);
+        TagPanelViewModel.LoadNoteTagsCommand.Execute(SelectedNote);
     }
 
     [RelayCommand]

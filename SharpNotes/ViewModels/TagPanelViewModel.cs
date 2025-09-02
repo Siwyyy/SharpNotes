@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -9,9 +10,12 @@ using SharpNotes.Services;
 
 namespace SharpNotes.ViewModels;
 
-public partial class TagsViewModel : ViewModelBase
+public partial class TagPanelViewModel : ViewModelBase
 {
     private readonly NotesService _notesService;
+
+    // Event do powiadamiania o zmianach w tagach
+    public event EventHandler? TagsChanged;
 
     [ObservableProperty] private ObservableCollection<Tag> _allTags = new();
     [ObservableProperty] private string _newTagName = string.Empty;
@@ -21,9 +25,15 @@ public partial class TagsViewModel : ViewModelBase
     [ObservableProperty] private ObservableCollection<Tag> _noteTagsCollection = new();
     [ObservableProperty] private Note? _currentNote;
 
-    public TagsViewModel(NotesService notesService)
+    public TagPanelViewModel(NotesService notesService)
     {
         _notesService = notesService;
+    }
+
+    // Metoda do wywoływania eventu
+    protected virtual void OnTagsChanged()
+    {
+        TagsChanged?.Invoke(this, EventArgs.Empty);
     }
 
     [RelayCommand]
@@ -79,6 +89,9 @@ public partial class TagsViewModel : ViewModelBase
             await _notesService.DeleteTagAsync(SelectedTag.Id);
             AllTags.Remove(SelectedTag);
             SelectedTag = null;
+
+            // Powiadom o zmianie tagów
+            OnTagsChanged();
         }
         finally
         {
@@ -87,7 +100,7 @@ public partial class TagsViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task LoadNoteTags(Note note)
+    private async Task LoadNoteTags(Note? note)
     {
         if (note == null)
             return;
@@ -96,21 +109,22 @@ public partial class TagsViewModel : ViewModelBase
         NoteTagsCollection.Clear();
 
         // Używamy HashSet do przechowywania unikalnych ID tagów
-        var addedTagIds = new HashSet<int>();
+        var uniqueTags = new HashSet<int>();
 
         foreach (var noteTag in note.NoteTags)
         {
             // Sprawdzamy, czy tag o tym ID nie został już dodany
-            if (!addedTagIds.Contains(noteTag.Tag.Id))
+            if (!uniqueTags.Contains(noteTag.TagId))
             {
                 NoteTagsCollection.Add(noteTag.Tag);
-                addedTagIds.Add(noteTag.Tag.Id);
+                uniqueTags.Add(noteTag.TagId);
             }
         }
     }
 
+
     [RelayCommand]
-    private async Task AddTagToNote(Tag tag)
+    private async Task AddTagToNote(Tag? tag)
     {
         if (CurrentNote == null || tag == null)
             return;
@@ -123,17 +137,27 @@ public partial class TagsViewModel : ViewModelBase
 
             if (!tagExists)
             {
+                // Dodaj tag do notatki w bazie danych
                 await _notesService.AddTagToNoteAsync(CurrentNote.Id, tag.Id);
 
-                // Odśwież notatkę, aby pobrać zaktualizowane powiązania z bazy danych
+                // Odśwież notatkę z bazy danych
                 CurrentNote = await _notesService.GetNoteByIdAsync(CurrentNote.Id);
 
-                // Zaktualizuj kolekcję tagów
+                // Odśwież listę tagów notatki
                 NoteTagsCollection.Clear();
+                var uniqueTags = new HashSet<int>();
+
                 foreach (var noteTag in CurrentNote.NoteTags)
                 {
-                    NoteTagsCollection.Add(noteTag.Tag);
+                    if (!uniqueTags.Contains(noteTag.TagId))
+                    {
+                        NoteTagsCollection.Add(noteTag.Tag);
+                        uniqueTags.Add(noteTag.TagId);
+                    }
                 }
+
+                // Powiadom o zmianie tagów
+                OnTagsChanged();
             }
         }
         finally
@@ -143,7 +167,7 @@ public partial class TagsViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task RemoveTagFromNote(Tag tag)
+    private async Task RemoveTagFromNote(Tag? tag)
     {
         if (CurrentNote == null || tag == null)
             return;
@@ -166,6 +190,9 @@ public partial class TagsViewModel : ViewModelBase
                 {
                     CurrentNote.NoteTags.Remove(noteTagToRemove);
                 }
+
+                // Powiadom o zmianie tagów
+                OnTagsChanged();
             }
         }
         finally
